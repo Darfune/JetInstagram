@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "531296700668",
+    "project_id": "jetinstagram-16f79",
+    "storage_bucket": "jetinstagram-16f79.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531296700668:android:e4ebb1b1b91d0725976f79",
+        "android_client_info": {
+          "package_name": "com.example.jetinstagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "531296700668-mbhalgu4febusfcv3bkjt8e9p37qlo77.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2m_sjyibWB_2TopSx20ypp_ddl8i-ruQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "531296700668-mbhalgu4febusfcv3bkjt8e9p37qlo77.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531296700668:android:ce59d1f117a048d4976f79",
+        "android_client_info": {
+          "package_name": "com.expample.jetinstagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "531296700668-mbhalgu4febusfcv3bkjt8e9p37qlo77.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2m_sjyibWB_2TopSx20ypp_ddl8i-ruQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "531296700668-mbhalgu4febusfcv3bkjt8e9p37qlo77.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
