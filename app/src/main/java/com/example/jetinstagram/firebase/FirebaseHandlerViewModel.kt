@@ -2,6 +2,7 @@ package com.example.jetinstagram.firebase
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.jetinstagram.data.Event
 import com.example.jetinstagram.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,6 +23,7 @@ class FirebaseHandlerViewModel @Inject constructor(
     val signedIn = mutableStateOf(false)
     val inProgress = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
+    val popupNotification = mutableStateOf<Event<String>?>(null)
 
     fun onSignup(username: String, email: String, password: String) {
         inProgress.value = true
@@ -46,8 +48,11 @@ class FirebaseHandlerViewModel @Inject constructor(
             .addOnFailureListener {  }
     }
 
-    fun handleException(exception: Exception? = null, customMessage: String? = "") {
-
+    fun handleException(exception: Exception? = null, customMessage: String = "") {
+        exception?.printStackTrace()
+        val errorMessage = exception?.localizedMessage ?: ""
+        val message = if (customMessage.isEmpty()) errorMessage else "$customMessage: $errorMessage"
+        popupNotification.value = Event(message)
     }
 
 }
