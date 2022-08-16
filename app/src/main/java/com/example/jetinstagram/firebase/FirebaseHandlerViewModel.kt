@@ -22,7 +22,7 @@ class FirebaseHandlerViewModel @Inject constructor(
 
     val signedIn = mutableStateOf(false)
     val inProgress = mutableStateOf(false)
-    val userData = mutableStateOf<UserData?>(null)
+    val knownUserData = mutableStateOf<UserData?>(null)
     val popupNotification = mutableStateOf<Event<String>?>(null)
 
     fun onSignup(username: String, email: String, password: String) {
@@ -36,8 +36,9 @@ class FirebaseHandlerViewModel @Inject constructor(
                 } else {
                     auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener { task ->
-                            if (task.isSuccessful){
+                            if (task.isSuccessful) {
                                 signedIn.value = true
+                                createOrUpdateProfile(username = username)
                             } else {
                                 handleException(task.exception, "Signup Failed")
                             }
@@ -45,7 +46,54 @@ class FirebaseHandlerViewModel @Inject constructor(
                         }
                 }
             }
-            .addOnFailureListener {  }
+            .addOnFailureListener { }
+    }
+
+    private fun createOrUpdateProfile(
+        name: String? = null,
+        username: String,
+        bio: String? = null,
+        imageUrl: String? = null
+    ) {
+        val uid = auth.currentUser?.uid
+        val userData = UserData(
+            userId = uid,
+            name = name ?: knownUserData.value?.name,
+            username = username ?: knownUserData.value?.username,
+            bio = bio ?: knownUserData.value?.bio,
+            imageUrl = imageUrl ?: knownUserData.value?.imageUrl,
+            following = knownUserData.value?.following
+        )
+
+        uid?.let {
+            inProgress.value = true
+            database.collection(USERS).document(uid).get()
+                .addOnSuccessListener {
+                    if (it.exists()) {
+                        it.reference.update(userData.dataToMap())
+                            .addOnSuccessListener {
+                                this.knownUserData.value = userData
+                                inProgress.value = false
+                            }
+                            .addOnFailureListener {
+                                handleException(it, "Cannot update user")
+                                inProgress.value = false
+                            }
+                    } else {
+                        database.collection(USERS).document(uid).set(userData)
+                        getUserData(uid)
+                        inProgress.value = false
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    handleException(exception, "Cannot create user")
+                    inProgress.value = false
+                }
+        }
+    }
+
+    private fun getUserData(uid: String) {
+
     }
 
     fun handleException(exception: Exception? = null, customMessage: String = "") {
