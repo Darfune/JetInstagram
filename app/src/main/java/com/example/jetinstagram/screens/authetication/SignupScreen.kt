@@ -52,7 +52,7 @@ fun SignupScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
 
 
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                painter = painterResource(id = R.drawable.ic_instagram_logo),
                 contentDescription = "Instagram Logo",
                 modifier = Modifier
                     .width(200.dp)
