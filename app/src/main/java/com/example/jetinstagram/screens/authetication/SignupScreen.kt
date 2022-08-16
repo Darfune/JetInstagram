@@ -15,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -22,11 +23,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.jetinstagram.JetInstagramViewModel
+import com.example.jetinstagram.firebase.FirebaseHandlerViewModel
 import com.example.jetinstagram.R
 
 @Composable
-fun SignupScreen(navController: NavController, viewModel: JetInstagramViewModel) {
+fun SignupScreen(navController: NavController, viewModel: FirebaseHandlerViewModel) {
 
     val usernameState = remember {
         mutableStateOf(TextFieldValue())
@@ -46,8 +47,7 @@ fun SignupScreen(navController: NavController, viewModel: JetInstagramViewModel)
                 .wrapContentHeight()
                 .verticalScroll(
                     rememberScrollState()
-                )
-        , horizontalAlignment = Alignment.CenterHorizontally
+                ), horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
 
@@ -83,7 +83,13 @@ fun SignupScreen(navController: NavController, viewModel: JetInstagramViewModel)
                 visualTransformation = PasswordVisualTransformation()
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    viewModel.onSignup(
+                        usernameState.value.text,
+                        emailState.value.text,
+                        passwordState.value.text
+                    )
+                },
                 modifier = Modifier.padding(8.dp)
             ) {
                 Text(text = "Sign Up")
