@@ -1,4 +1,4 @@
-package com.example.jetinstagram.screens.authetication
+package com.example.jetinstagram.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -11,11 +11,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -23,26 +21,24 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.jetinstagram.firebase.FirebaseHandlerViewModel
 import com.example.jetinstagram.R
+import com.example.jetinstagram.firebase.FirebaseHandlerViewModel
 import com.example.jetinstagram.navigation.JetInstagramScreens
 import com.example.jetinstagram.widgets.CommonProgressSpinner
 import com.example.jetinstagram.widgets.navigateTo
 
 @Composable
-fun SignupScreen(navController: NavController, viewModel: FirebaseHandlerViewModel) {
+fun LoginScreen(navController: NavController, viewModel: FirebaseHandlerViewModel) {
 
     val usernameState = remember {
         mutableStateOf(TextFieldValue())
     }
 
-    val emailState = remember {
-        mutableStateOf(TextFieldValue())
-    }
 
     val passwordState = remember {
         mutableStateOf(TextFieldValue())
     }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -74,11 +70,6 @@ fun SignupScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
                 modifier = Modifier.padding(8.dp),
                 label = { Text(text = "Username") })
             OutlinedTextField(
-                value = emailState.value,
-                onValueChange = { emailState.value = it },
-                modifier = Modifier.padding(8.dp),
-                label = { Text(text = "Email") })
-            OutlinedTextField(
                 value = passwordState.value,
                 onValueChange = { passwordState.value = it },
                 modifier = Modifier.padding(8.dp),
@@ -87,22 +78,18 @@ fun SignupScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
             )
             Button(
                 onClick = {
-                    viewModel.onSignup(
-                        usernameState.value.text,
-                        emailState.value.text,
-                        passwordState.value.text
-                    )
+
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
                 Text(text = "Sign Up")
             }
-            Text(text = "Already a user? Go to login ->",
+            Text(text = "New user? Sign up now ->",
                 color = Color.Blue,
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable {
-                        navigateTo(navController,JetInstagramScreens.LoginScreen)
+                        navigateTo(navController, JetInstagramScreens.SignupScreen)
                     })
         }
         val isLoading = viewModel.inProgress.value
