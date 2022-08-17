@@ -27,6 +27,7 @@ class FirebaseHandlerViewModel @Inject constructor(
     val popupNotification = mutableStateOf<Event<String>?>(null)
 
     init {
+        auth.signOut()
         val currentUser = auth.currentUser
         signedIn.value = currentUser != null
         currentUser?.uid?.let { uid ->
@@ -35,6 +36,16 @@ class FirebaseHandlerViewModel @Inject constructor(
     }
 
     fun onSignup(username: String, email: String, password: String) {
+        if (username.isEmpty()) {
+            handleException(customMessage = "Please enter your username")
+            return
+        } else if (email.isEmpty()) {
+            handleException(customMessage = "Please enter your email")
+            return
+        } else if (password.isEmpty()) {
+            handleException(customMessage = "Please enter your password")
+            return
+        }
         inProgress.value = true
 
         database.collection(USERS).whereEqualTo("username", username).get()
@@ -120,6 +131,34 @@ class FirebaseHandlerViewModel @Inject constructor(
         val errorMessage = exception?.localizedMessage ?: ""
         val message = if (customMessage.isEmpty()) errorMessage else "$customMessage: $errorMessage"
         popupNotification.value = Event(message)
+    }
+
+    fun onLogin(email: String, password: String) {
+        if (email.isEmpty()) {
+            handleException(customMessage = "Please enter your email")
+            return
+        } else if (password.isEmpty()) {
+            handleException(customMessage = "Please enter your password")
+            return
+        }
+        inProgress.value = true
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    signedIn.value = true
+                    inProgress.value = false
+                    auth.currentUser?.uid?.let { uid ->
+                        handleException(customMessage = "Login was Successful")
+                        getUserData(uid)
+                    }
+                } else {
+                    handleException(task.exception, "Unable to login")
+                }
+            }
+            .addOnFailureListener { exception ->
+                handleException(exception, "Unable to login")
+                inProgress.value = false
+            }
     }
 
 }

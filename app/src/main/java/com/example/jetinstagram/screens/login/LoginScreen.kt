@@ -62,7 +62,7 @@ fun LoginScreen(navController: NavController, viewModel: FirebaseHandlerViewMode
                     .padding(8.dp)
             )
             Text(
-                text = "Signup",
+                text = "Login",
                 modifier = Modifier.padding(8.dp),
                 fontSize = 30.sp,
                 fontFamily = FontFamily.SansSerif
@@ -82,6 +82,10 @@ fun LoginScreen(navController: NavController, viewModel: FirebaseHandlerViewMode
             Button(
                 onClick = {
                     focus.clearFocus(force = true)
+                    viewModel.onLogin(
+                        emailState.value.text,
+                        passwordState.value.text
+                    )
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
@@ -96,7 +100,7 @@ fun LoginScreen(navController: NavController, viewModel: FirebaseHandlerViewMode
                     })
         }
         val isLoading = viewModel.inProgress.value
-        if (isLoading){
+        if (isLoading) {
             CommonProgressSpinner()
         }
     }
