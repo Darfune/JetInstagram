@@ -91,12 +91,12 @@ fun SignupScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
             )
             Button(
                 onClick = {
+                    focus.clearFocus(force = true)
                     viewModel.onSignup(
                         usernameState.value.text,
                         emailState.value.text,
                         passwordState.value.text
                     )
-                    focus.clearFocus(force = true)
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
