@@ -22,7 +22,6 @@ class FirebaseHandlerViewModel @Inject constructor(
 ) : ViewModel() {
 
     val signedIn = mutableStateOf(false)
-
     val inProgress = mutableStateOf(false)
     val knownUserData = mutableStateOf<UserData?>(null)
     val popupNotification = mutableStateOf<Event<String>?>(null)

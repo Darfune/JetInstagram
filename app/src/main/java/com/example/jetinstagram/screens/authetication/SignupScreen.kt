@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.jetinstagram.firebase.FirebaseHandlerViewModel
 import com.example.jetinstagram.R
+import com.example.jetinstagram.widgets.CommonProgressSpinner
 
 @Composable
 fun SignupScreen(navController: NavController, viewModel: FirebaseHandlerViewModel) {
@@ -99,6 +100,10 @@ fun SignupScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable { })
+        }
+        val isLoading = viewModel.inProgress.value
+        if (isLoading){
+            CommonProgressSpinner()
         }
     }
 }
