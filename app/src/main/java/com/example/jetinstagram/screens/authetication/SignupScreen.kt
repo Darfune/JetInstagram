@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -43,6 +44,9 @@ fun SignupScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
     val passwordState = remember {
         mutableStateOf(TextFieldValue())
     }
+
+    val focus = LocalFocusManager.current
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -92,6 +96,7 @@ fun SignupScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
                         emailState.value.text,
                         passwordState.value.text
                     )
+                    focus.clearFocus(force = true)
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
