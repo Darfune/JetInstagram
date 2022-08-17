@@ -6,6 +6,7 @@ import com.example.jetinstagram.data.Event
 import com.example.jetinstagram.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -21,9 +22,18 @@ class FirebaseHandlerViewModel @Inject constructor(
 ) : ViewModel() {
 
     val signedIn = mutableStateOf(false)
+
     val inProgress = mutableStateOf(false)
     val knownUserData = mutableStateOf<UserData?>(null)
     val popupNotification = mutableStateOf<Event<String>?>(null)
+
+    init {
+        val currentUser = auth.currentUser
+        signedIn.value = currentUser != null
+        currentUser?.uid?.let { uid ->
+            getUserData(uid)
+        }
+    }
 
     fun onSignup(username: String, email: String, password: String) {
         inProgress.value = true
@@ -93,7 +103,17 @@ class FirebaseHandlerViewModel @Inject constructor(
     }
 
     private fun getUserData(uid: String) {
-
+        inProgress.value = true
+        database.collection(USERS).document(uid).get()
+            .addOnSuccessListener {
+                val user = it.toObject<UserData>()
+                knownUserData.value = user
+                inProgress.value = false
+            }
+            .addOnFailureListener { exception ->
+                handleException(exception, "Cannot retrieve user data")
+                inProgress.value = false
+            }
     }
 
     fun handleException(exception: Exception? = null, customMessage: String = "") {
