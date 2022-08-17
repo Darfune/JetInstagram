@@ -25,11 +25,14 @@ import androidx.navigation.NavController
 import com.example.jetinstagram.R
 import com.example.jetinstagram.firebase.FirebaseHandlerViewModel
 import com.example.jetinstagram.navigation.JetInstagramScreens
+import com.example.jetinstagram.widgets.CheckSignIn
 import com.example.jetinstagram.widgets.CommonProgressSpinner
 import com.example.jetinstagram.widgets.navigateTo
 
 @Composable
 fun LoginScreen(navController: NavController, viewModel: FirebaseHandlerViewModel) {
+
+    CheckSignIn(navController = navController, viewModel = viewModel)
 
     val emailState = remember {
         mutableStateOf(TextFieldValue())
