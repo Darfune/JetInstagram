@@ -1,4 +1,4 @@
-package com.example.jetinstagram.screens.feed
+package com.example.jetinstagram.screens.myposts
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,13 +11,13 @@ import com.example.jetinstagram.menu.BottomNavigationItem
 import com.example.jetinstagram.menu.BottomNavigationMenu
 
 @Composable
-fun FeedScreen(navController: NavController, viewModel: FirebaseHandlerViewModel) {
+fun MyPostScreen(navController: NavController, viewModel: FirebaseHandlerViewModel) {
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = "Feed Screen")
+            Text(text = "My Posts Screen")
         }
         BottomNavigationMenu(
-            selectedItem = BottomNavigationItem.FEED,
+            selectedItem = BottomNavigationItem.POSTS,
             navController = navController
         )
     }
