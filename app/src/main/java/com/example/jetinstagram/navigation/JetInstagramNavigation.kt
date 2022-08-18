@@ -9,6 +9,8 @@ import com.example.jetinstagram.firebase.FirebaseHandlerViewModel
 import com.example.jetinstagram.screens.authetication.SignupScreen
 import com.example.jetinstagram.screens.feed.FeedScreen
 import com.example.jetinstagram.screens.login.LoginScreen
+import com.example.jetinstagram.screens.myposts.MyPostScreen
+import com.example.jetinstagram.screens.search.SearchScreen
 import com.example.jetinstagram.widgets.NotificationMessage
 
 @Composable
@@ -25,6 +27,12 @@ fun JetInstagramNavigation() {
         }
         composable(JetInstagramScreens.FeedScreen.name) {
             FeedScreen(navController = navController, viewModel = viewModel)
+        }
+        composable(JetInstagramScreens.SearchScreen.name) {
+            SearchScreen(navController = navController, viewModel = viewModel)
+        }
+        composable(JetInstagramScreens.MyPostsScreen.name) {
+            MyPostScreen(navController = navController, viewModel = viewModel)
         }
     }
 }
