@@ -48,30 +48,31 @@ fun MyPostScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
                     textAlign = TextAlign.Center
                 )
             }
-        }
-        Column(modifier = Modifier.padding(8.dp)) {
-            val usernameDisplay = if (userData?.username == null) "" else "${userData.username}"
-            Text(text = userData?.name ?: "", fontWeight = FontWeight.Bold)
-            Text(text = usernameDisplay)
-            Text(text = userData?.bio ?: "")
-        }
-        OutlinedButton(
-            onClick = {},
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-            elevation = ButtonDefaults.elevation(
-                defaultElevation = 0.dp,
-                pressedElevation = 0.dp,
-                disabledElevation = 0.dp
-            ),
-            shape = RoundedCornerShape(10)
-        ) {
-            Text(text = "Edit Profile", color = Color.Black)
-        }
-        Column(modifier = Modifier.weight(1f)) {
-            Text(text = "Posts List")
+
+            Column(modifier = Modifier.padding(8.dp)) {
+                val usernameDisplay = if (userData?.username == null) "" else "${userData.username}"
+                Text(text = userData?.name ?: "", fontWeight = FontWeight.Bold)
+                Text(text = usernameDisplay)
+                Text(text = userData?.bio ?: "")
+            }
+            OutlinedButton(
+                onClick = {},
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                elevation = ButtonDefaults.elevation(
+                    defaultElevation = 0.dp,
+                    pressedElevation = 0.dp,
+                    disabledElevation = 0.dp
+                ),
+                shape = RoundedCornerShape(10)
+            ) {
+                Text(text = "Edit Profile", color = Color.Black)
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = "Posts List")
+            }
         }
         BottomNavigationMenu(
             selectedItem = BottomNavigationItem.POSTS,
