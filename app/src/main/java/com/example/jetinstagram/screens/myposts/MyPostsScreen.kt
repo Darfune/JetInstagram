@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -94,7 +95,7 @@ fun MyPostScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
 @Composable
 fun ProfileImage(imageUrl: String?, onClick: () -> Unit) {
     Box(modifier = Modifier
-        .padding(16.dp)
+        .padding(top = 16.dp)
         .clickable { onClick.invoke() }) {
         UserImageCard(
             userImage = imageUrl,
@@ -110,11 +111,12 @@ fun ProfileImage(imageUrl: String?, onClick: () -> Unit) {
             ),
             modifier = Modifier
                 .size(32.dp)
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomEnd)
                 .padding(bottom = 8.dp, end = 8.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_add),
+                colorFilter = ColorFilter.tint(Color.White),
                 contentDescription = "add icon",
                 modifier = Modifier
                     .background(Color.Blue)
