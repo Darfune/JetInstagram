@@ -10,6 +10,7 @@ import com.example.jetinstagram.screens.authetication.SignupScreen
 import com.example.jetinstagram.screens.feed.FeedScreen
 import com.example.jetinstagram.screens.login.LoginScreen
 import com.example.jetinstagram.screens.myposts.MyPostScreen
+import com.example.jetinstagram.screens.profile.ProfileScreen
 import com.example.jetinstagram.screens.search.SearchScreen
 import com.example.jetinstagram.widgets.NotificationMessage
 
@@ -33,6 +34,9 @@ fun JetInstagramNavigation() {
         }
         composable(JetInstagramScreens.MyPostsScreen.name) {
             MyPostScreen(navController = navController, viewModel = viewModel)
+        }
+        composable(JetInstagramScreens.ProfileScreen.name) {
+            ProfileScreen(navController = navController, viewModel = viewModel)
         }
     }
 }
