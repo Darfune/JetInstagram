@@ -25,7 +25,10 @@ import com.example.jetinstagram.R
 import com.example.jetinstagram.firebase.FirebaseHandlerViewModel
 import com.example.jetinstagram.menu.BottomNavigationItem
 import com.example.jetinstagram.menu.BottomNavigationMenu
+import com.example.jetinstagram.navigation.JetInstagramScreens
+import com.example.jetinstagram.widgets.CommonProgressSpinner
 import com.example.jetinstagram.widgets.UserImageCard
+import com.example.jetinstagram.widgets.navigateTo
 
 @Composable
 fun MyPostScreen(navController: NavController, viewModel: FirebaseHandlerViewModel) {
@@ -66,7 +69,7 @@ fun MyPostScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
                 Text(text = userData?.bio ?: "")
             }
             OutlinedButton(
-                onClick = {},
+                onClick = { navigateTo(navController, JetInstagramScreens.ProfileScreen) },
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
@@ -89,6 +92,8 @@ fun MyPostScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
             navController = navController
         )
     }
+
+    if (isLoading) CommonProgressSpinner()
 
 }
 
