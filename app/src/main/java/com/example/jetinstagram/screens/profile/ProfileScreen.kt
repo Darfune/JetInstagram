@@ -60,7 +60,8 @@ fun ProfileScreen(
             onBioChange = { bio = it },
             onSave = { viewModel.updateProfileData(name, username, bio) },
             onBack = { navigateTo(navController, JetInstagramScreens.MyPostsScreen) },
-            onLogout = { }
+            onLogout = { viewModel.onLogout()
+            navigateTo(navController, JetInstagramScreens.LoginScreen)}
         )
     }
 }

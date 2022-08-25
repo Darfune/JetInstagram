@@ -193,4 +193,11 @@ class FirebaseHandlerViewModel @Inject constructor(
         }
     }
 
+    fun onLogout() {
+        auth.signOut()
+        signedIn.value = false
+        knownUserData.value = null
+        popupNotification.value = Event("Logged Out")
+    }
+
 }
