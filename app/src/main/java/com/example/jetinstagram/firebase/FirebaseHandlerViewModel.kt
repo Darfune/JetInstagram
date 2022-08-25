@@ -1,5 +1,9 @@
 package com.example.jetinstagram.firebase
 
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.jetinstagram.data.Event
@@ -9,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
 import javax.inject.Inject
 
 
@@ -71,7 +76,7 @@ class FirebaseHandlerViewModel @Inject constructor(
 
     private fun createOrUpdateProfile(
         name: String? = null,
-        username: String,
+        username: String? = null,
         bio: String? = null,
         imageUrl: String? = null
     ) {
@@ -159,6 +164,33 @@ class FirebaseHandlerViewModel @Inject constructor(
                 handleException(exception, "Unable to login")
                 inProgress.value = false
             }
+    }
+
+    fun updateProfileData(name: String, username: String, bio: String) {
+        createOrUpdateProfile(name, username, bio)
+    }
+
+    private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit) {
+        inProgress.value = true
+
+
+        val storageReference = storage.reference
+        val uuid = UUID.randomUUID()
+        val imageRef = storageReference.child("images/$uuid")
+        val uploadTask = imageRef.putFile(uri)
+
+        uploadTask.addOnSuccessListener {
+            val result = it.metadata?.reference?.downloadUrl
+            result?.addOnSuccessListener(onSuccess)
+        }.addOnFailureListener { exception ->
+            handleException(exception = exception)
+        }
+    }
+
+    fun uploadProfileImage(uri: Uri) {
+        uploadImage(uri) {
+            createOrUpdateProfile(imageUrl = it.toString())
+        }
     }
 
 }

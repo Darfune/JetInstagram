@@ -1,10 +1,15 @@
 package com.example.jetinstagram.screens.profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -21,6 +26,7 @@ import androidx.navigation.NavController
 import com.example.jetinstagram.firebase.FirebaseHandlerViewModel
 import com.example.jetinstagram.navigation.JetInstagramScreens
 import com.example.jetinstagram.widgets.CommonDivider
+import com.example.jetinstagram.widgets.CommonImage
 import com.example.jetinstagram.widgets.CommonProgressSpinner
 import com.example.jetinstagram.widgets.navigateTo
 
@@ -52,7 +58,7 @@ fun ProfileScreen(
             onNameChange = { name = it },
             onUsernameChange = { username = it },
             onBioChange = { bio = it },
-            onSave = { },
+            onSave = { viewModel.updateProfileData(name, username, bio) },
             onBack = { navigateTo(navController, JetInstagramScreens.MyPostsScreen) },
             onLogout = { }
         )
@@ -73,6 +79,7 @@ fun ProfileContent(
     onLogout: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val imageUrl = viewModel.knownUserData.value?.imageUrl
 
     Column(
         modifier = Modifier
@@ -91,15 +98,7 @@ fun ProfileContent(
 
         CommonDivider()
 
-        // User image
-        Column(
-            modifier = Modifier
-                .height(200.dp)
-                .fillMaxWidth()
-                .background(Color.Gray)
-        ) {
-
-        }
+        ProfileImage(imageUrl = imageUrl, viewModel = viewModel)
 
         CommonDivider()
 
@@ -162,5 +161,38 @@ fun ProfileContent(
             Text(text = "Logout",
                 modifier = Modifier.clickable { onLogout.invoke() })
         }
+    }
+}
+
+@Composable
+fun ProfileImage(imageUrl: String?, viewModel: FirebaseHandlerViewModel) {
+    
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+        uri: Uri? ->
+        uri?.let { viewModel.uploadProfileImage(uri) }
+    }
+    
+    
+    Box(modifier = Modifier.height(IntrinsicSize.Min)) {
+        Column(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .clickable { launcher.launch("image/*") },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Card(
+                shape = CircleShape,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(100.dp)
+            ) {
+                CommonImage(data = imageUrl)
+            }
+            Text(text = "Change profile picture")
+        }
+
+        val isLoading = viewModel.inProgress.value
+        if (isLoading) CommonProgressSpinner()
     }
 }
