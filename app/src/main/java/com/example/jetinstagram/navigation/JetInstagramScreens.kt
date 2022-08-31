@@ -6,5 +6,6 @@ enum class JetInstagramScreens {
     FeedScreen,
     SearchScreen,
     MyPostsScreen,
-    ProfileScreen
+    ProfileScreen,
+    NewPostScreen
 }

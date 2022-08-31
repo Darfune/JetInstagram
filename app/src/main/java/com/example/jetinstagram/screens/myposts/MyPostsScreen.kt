@@ -1,5 +1,8 @@
 package com.example.jetinstagram.screens.myposts
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,12 +38,21 @@ fun MyPostScreen(navController: NavController, viewModel: FirebaseHandlerViewMod
 
     val userData = viewModel.knownUserData.value
     val isLoading = viewModel.inProgress.value
+    val newPostImageLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent()
+        ) { uri ->
+            uri?.let {
+                val encode = Uri.encode(it.toString())
+                navController.navigate(JetInstagramScreens.NewPostScreen.name + "/$encode")
+            }
+        }
 
     Column {
         Column(modifier = Modifier.weight(1f)) {
             Row {
                 ProfileImage(userData?.imageUrl) {
-
+                    newPostImageLauncher.launch("image/*")
                 }
                 Text(
                     text = "15\nposts", modifier = Modifier
