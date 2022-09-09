@@ -5,8 +5,10 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.window.isPopupLayout
 import androidx.lifecycle.ViewModel
 import com.example.jetinstagram.data.Event
+import com.example.jetinstagram.data.PostData
 import com.example.jetinstagram.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,6 +20,7 @@ import javax.inject.Inject
 
 
 const val USERS = "users"
+const val POSTS = "posts"
 
 @HiltViewModel
 class FirebaseHandlerViewModel @Inject constructor(
@@ -198,6 +201,45 @@ class FirebaseHandlerViewModel @Inject constructor(
         signedIn.value = false
         knownUserData.value = null
         popupNotification.value = Event("Logged Out")
+    }
+
+    fun onNewPost(uri: Uri, description: String, onPostSuccess: () -> Unit) {
+        uploadImage(uri) {
+            onCreatePost(it, description, onPostSuccess)
+        }
+    }
+
+    private fun onCreatePost(imageUri: Uri, description: String, onPostSuccess: () -> Unit) {
+        inProgress.value = true
+        val currentUid = auth.currentUser?.uid
+        val currentUsername = knownUserData.value?.username
+        val currentUserImage = knownUserData.value?.imageUrl
+
+        if (currentUid.isNullOrEmpty()) {
+            val postUuid = UUID.randomUUID().toString()
+
+            val post = PostData(
+                postId = postUuid,
+                userId = currentUid,
+                username = currentUsername,
+                userImage = currentUserImage,
+                postImage = imageUri.toString(),
+                postDescription = description,
+                time = System.currentTimeMillis()
+            )
+
+            database.collection(POSTS).document(postUuid).set(post)
+                .addOnSuccessListener {
+                    popupNotification.value = Event("Post successfully created")
+                    inProgress.value = false
+                    onPostSuccess.invoke()
+                }
+
+        } else {
+            handleException(customMessage = "Error: Username unavailable. Unable to create post")
+            onLogout()
+            inProgress.value = false
+        }
     }
 
 }
