@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.window.isPopupLayout
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import com.example.jetinstagram.data.PostData
 import com.example.jetinstagram.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +35,11 @@ class FirebaseHandlerViewModel @Inject constructor(
     val inProgress = mutableStateOf(false)
     val knownUserData = mutableStateOf<UserData?>(null)
     val popupNotification = mutableStateOf<Event<String>?>(null)
+
+
+    val refreshPostsProgress = mutableStateOf(false)
+    val posts = mutableStateOf<List<PostData>>(listOf())
+
 
     init {
 //        auth.signOut()
@@ -127,6 +134,7 @@ class FirebaseHandlerViewModel @Inject constructor(
                 val user = it.toObject<UserData>()
                 knownUserData.value = user
                 inProgress.value = false
+                refreshPosts()
             }
             .addOnFailureListener { exception ->
                 handleException(exception, "Cannot retrieve user data")
@@ -215,7 +223,7 @@ class FirebaseHandlerViewModel @Inject constructor(
         val currentUsername = knownUserData.value?.username
         val currentUserImage = knownUserData.value?.imageUrl
 
-        if (currentUid.isNullOrEmpty()) {
+        if (!currentUid.isNullOrEmpty()) {
             val postUuid = UUID.randomUUID().toString()
 
             val post = PostData(
@@ -232,6 +240,7 @@ class FirebaseHandlerViewModel @Inject constructor(
                 .addOnSuccessListener {
                     popupNotification.value = Event("Post successfully created")
                     inProgress.value = false
+                    refreshPosts()
                     onPostSuccess.invoke()
                 }
 
@@ -240,6 +249,35 @@ class FirebaseHandlerViewModel @Inject constructor(
             onLogout()
             inProgress.value = false
         }
+    }
+
+    fun refreshPosts() {
+        val currentUid = auth.currentUser?.uid
+        if (!currentUid.isNullOrEmpty()) {
+            refreshPostsProgress.value = true
+            database.collection(POSTS).whereEqualTo("userId", currentUid).get()
+                .addOnSuccessListener { documents ->
+                    convertPosts(documents, posts)
+                    refreshPostsProgress.value = false
+                }
+                .addOnFailureListener { exception ->
+                    handleException(exception, "Cannot fetch posts")
+                    refreshPostsProgress.value = false
+                }
+        } else {
+            handleException(customMessage = "Error: username unavailable. Unable to refresh posts")
+            onLogout()
+        }
+    }
+
+    private fun convertPosts(documents: QuerySnapshot, outState: MutableState<List<PostData>>) {
+        val newPosts = mutableListOf<PostData>()
+        documents.forEach{ document ->
+            val post = document.toObject<PostData>()
+            newPosts.add(post)
+        }
+        val sortedPosts = newPosts.sortedByDescending { it.time }
+        outState.value = sortedPosts
     }
 
 }
